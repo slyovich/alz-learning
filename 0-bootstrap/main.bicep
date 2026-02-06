@@ -14,6 +14,7 @@ param locationShortName string = 'uks'
 
 module subscriptionVending 'modules/lz-vending.bicep' = {
   name: 'lz-vending-initialisation'
+  scope: managementGroup(managementGroupName)
   params: {
     managementGroupName: managementGroupName
     existingSubscriptionId: existingSubscriptionId

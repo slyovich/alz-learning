@@ -1,19 +1,19 @@
 targetScope = 'managementGroup'
 
 @description('The name of the management group.')
-param managementGroupName string = 'alz-landingzones-corp'
+param managementGroupName string
 
 @description('The ID of the existing subscription.')
 param existingSubscriptionId string
 
 @description('Specifies the location for resources.')
-param location string = 'uksouth'
+param location string
 
 @description('Specifies the acronyme of the location')
-param locationShortName string = 'uks'
+param locationShortName string
 
 module subscriptionVending 'br/public:avm/ptn/lz/sub-vending:0.5.3' = {
-  name: 'lz-vending-initialisation'
+  name: 'lz-vending'
   params: {
     subscriptionAliasEnabled: false
     existingSubscriptionId: existingSubscriptionId

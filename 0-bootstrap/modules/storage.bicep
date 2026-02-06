@@ -39,5 +39,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.31.0' = {
     enableHierarchicalNamespace: false
     allowedCopyScope: 'AAD'
     publicNetworkAccess: 'Disabled'
+    roleAssignments: [
+      {
+        principalId: deployer().objectId
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+      }
+    ]
   }
 }
