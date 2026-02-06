@@ -41,8 +41,15 @@ module subscriptionVending 'br/public:avm/ptn/lz/sub-vending:0.5.3' = {
         resourceGroupLockEnabled: false
         subnets: [
           {
+            name: 'GatewaySubnet'
+            addressPrefix: '10.0.1.0/27'
+            privateEndpointNetworkPolicies: 'Enabled'
+            privateLinkServiceNetworkPolicies: 'Enabled'
+            defaultOutboundAccess: false
+          }
+          {
             name: 'snet-bootstrap-privateendpoints'
-            addressPrefix: '10.0.1.0/28'
+            addressPrefix: '10.0.1.32/28'
             networkSecurityGroup: {
               name: 'nsg-bootstrap-privateendpoints'
               location: location
@@ -73,47 +80,4 @@ module subscriptionVending 'br/public:avm/ptn/lz/sub-vending:0.5.3' = {
     ]
     resourceProviders: {}
   }
-}
-
-module dnsZones 'dns-zones.bicep' = {
-  name: 'lz-vending-dns-zones'
-  scope: resourceGroup(existingSubscriptionId, 'rg-connectivity-${locationShortName}-001')
-  params: {
-    virtualNetworkResourceIds: [
-      {
-        virtualNetworkResourceId: '/subscriptions/${existingSubscriptionId}/resourceGroups/rg-connectivity-${locationShortName}-001/providers/Microsoft.Network/virtualNetworks/vnet-connectivity-${locationShortName}-001'
-      }
-      {
-        virtualNetworkResourceId: '/subscriptions/${existingSubscriptionId}/resourceGroups/rg-connectivity-${locationShortName}-001/providers/Microsoft.Network/virtualNetworks/vnet-connectivity-${locationShortName}-002'
-      }
-    ]
-  }
-  dependsOn: [
-    subscriptionVending
-  ]
-}
-
-module resourceGroups 'resourcegroups.bicep' = {
-  name: 'lz-vending-resource-groups'
-  scope: subscription(existingSubscriptionId)
-  params: {
-    location: location
-    locationShortName: locationShortName
-  }
-  dependsOn: [
-    dnsZones
-  ]
-}
-
-module storage 'storage.bicep' = {
-  name: 'lz-vending-storage'
-  scope: resourceGroup(existingSubscriptionId, 'rg-devops-${locationShortName}-001')
-  params: {
-    storageAccountName: 'asalzstate${locationShortName}001'
-    subnetId: '/subscriptions/${existingSubscriptionId}/resourceGroups/rg-connectivity-${locationShortName}-001/providers/Microsoft.Network/virtualNetworks/vnet-connectivity-${locationShortName}-002/subnets/snet-bootstrap-privateendpoints'
-    privateLinkPrivateDnsZoneId: '/subscriptions/${existingSubscriptionId}/resourceGroups/rg-connectivity-${locationShortName}-001/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net'
-  }
-  dependsOn: [
-    resourceGroups
-  ]
 }
