@@ -45,5 +45,16 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.31.0' = {
         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
       }
     ]
+    blobServices: {
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 7
+      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 6
+      containers: [
+        {
+          name: 'state'
+        }
+      ]
+    }
   }
 }
