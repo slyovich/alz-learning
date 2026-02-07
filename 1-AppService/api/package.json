@@ -11,7 +11,6 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@azure/monitor-opentelemetry": "^1.15.1",
     "express": "^5.2.1"
   }
 }

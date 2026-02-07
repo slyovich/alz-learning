@@ -20,4 +20,4 @@ az webapp config set --name ${WEBAPP_NAME} --resource-group ${RG_NAME} --startup
 sleep 30
 
 # Deploy the app
-az webapp up --name ${WEBAPP_NAME} --resource-group ${RG_NAME} --runtime "NODE:24-lts" --track-status true
+az webapp up --name ${WEBAPP_NAME} --resource-group ${RG_NAME} --runtime "NODE:24-lts" --track-status false

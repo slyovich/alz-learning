@@ -114,8 +114,8 @@ Internet ←→ App Service (Public IP + Default Domain)
 
 - ❌ IP publique exposée (DDoS, scans)
 - ❌ Pas de WAF (Web Application Firewall)
-- ❌ Logs limités
 - ❌ N'importe qui peut accéder
+- ❌ Pas de contrôle les flux sortants (ex. exfiltration de données)
 
 ## Demo
 ```bash
@@ -151,6 +151,15 @@ Internet ←→ [IP Whitelist] → App Service
 
 ---
 
+<style scoped>
+  h2 {
+    font-size: 32px;
+  }
+  ul {
+    font-size: 24px;
+  }
+</style>
+
 # 🔐 Étape 2 : Capabilities
 
 ## ✅ Ce qui marche toujours
@@ -168,6 +177,10 @@ Internet ←→ [IP Whitelist] → App Service
 
 - ❌ Pas de WAF (pas de L7 inspection)
 - ❌ Toujours exposé publiquement (si IP whitelistée)
+
+---
+
+# 🔐 Étape 2 : Capabilities
 
 ## Demo
 ```bash
