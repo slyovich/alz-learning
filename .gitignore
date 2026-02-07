@@ -35,3 +35,11 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# Ignore node resources
+node_modules
+package-lock.json
+yarn.lock
+
+# Ignore az cli config cache
+.azure

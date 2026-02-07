@@ -53,6 +53,36 @@ module subscriptionVending 'br/public:avm/ptn/lz/sub-vending:0.5.3' = {
             networkSecurityGroup: {
               name: 'nsg-bootstrap-privateendpoints'
               location: location
+              securityRules: [
+                {
+                  name: 'DenyAllInbound'
+                  properties: {
+                    access: 'Deny'
+                    description: 'Deny all inbound traffic'
+                    destinationAddressPrefix: '*'
+                    destinationPortRange: '*'
+                    direction: 'Inbound'
+                    priority: 999
+                    protocol: '*'
+                    sourceAddressPrefixes: ['*']
+                    sourcePortRange: '*'
+                  }
+                }
+                {
+                  name: 'DenyAllOutbound'
+                  properties: {
+                    access: 'Deny'
+                    description: 'Deny all outbound traffic'
+                    destinationAddressPrefix: '*'
+                    destinationPortRange: '*'
+                    direction: 'Outbound'
+                    priority: 999
+                    protocol: '*'
+                    sourceAddressPrefixes: ['*']
+                    sourcePortRange: '*'
+                  }
+                }
+              ]
             }
             privateEndpointNetworkPolicies: 'Enabled'
             privateLinkServiceNetworkPolicies: 'Enabled'

@@ -1,6 +1,6 @@
 # 🚀 Azure Learning Playground
 
-Welcome to your hands-on Azure adventure! This repo is your launchpad for learning Azure using Infrastructure as Code (IaC) with Bicep and Terraform. Get ready to deploy, break, and rebuild the cloud—one module at a time! ☁️🛠️
+Welcome to your hands-on Azure adventure! This repo is your launchpad for learning Azure using Infrastructure as Code (IaC) with Bicep, Terraform and Azure CLI. Get ready to deploy, break, and rebuild the cloud—one module at a time! ☁️🛠️
 
 ---
 
@@ -18,7 +18,7 @@ Welcome to your hands-on Azure adventure! This repo is your launchpad for learni
 
 ## 1. 🎉 Introduction
 
-This repository is designed for developers who want to learn Azure by doing! It provides modular Bicep/Terraform templates to help you bootstrap and manage core Azure resources in a repeatable, automated way. Perfect for experimentation, demos, and cloud mischief. 😈
+This repository is designed for developers who want to learn Azure by doing! It provides modular Bicep/Terraform/Azure CLI templates to help you bootstrap and manage core Azure resources in a repeatable, automated way. Perfect for experimentation, demos, and cloud mischief. 😈
 
 ## 2. 🗂️ Repository Structure
 
