@@ -12,6 +12,12 @@ param location string = 'uksouth'
 @description('Specifies the acronyme of the location')
 param locationShortName string = 'uks'
 
+@description('Specifies the admin username for the virtual machine.')
+param adminUsername string
+
+@description('Specifies the admin public key for the virtual machine.')
+param adminPublicKey string
+
 module subscriptionVending 'modules/lz-vending.bicep' = {
   name: 'lz-vending-initialisation'
   scope: managementGroup(managementGroupName)
@@ -66,13 +72,14 @@ module storage 'modules/storage.bicep' = {
   ]
 }
 
-module vpngateway 'modules/vpngateway.bicep' = {
-  name: 'lz-vending-vpngateway'
-  scope: resourceGroup(existingSubscriptionId, 'rg-connectivity-${locationShortName}-001')
+module virtualMachine 'modules/virtualmachine.bicep' = {
+  name: 'lz-vending-virtual-machine'
+  scope: resourceGroup(existingSubscriptionId, 'rg-devops-${locationShortName}-001')
   params: {
-    vnetName: 'vnet-connectivity-${locationShortName}-002'
-    gwPublicIpName: 'pip-connectivity-${locationShortName}-001'
-    vnetGatewayName: 'vng-connectivity-${locationShortName}-001'
+    vmName: 'vm-bootstrap-${locationShortName}-001'
+    subnetId: '/subscriptions/${existingSubscriptionId}/resourceGroups/rg-connectivity-${locationShortName}-001/providers/Microsoft.Network/virtualNetworks/vnet-connectivity-${locationShortName}-002/subnets/snet-bootstrap-privateendpoints'
+    adminUsername: adminUsername
+    adminPublicKey: adminPublicKey
   }
   dependsOn: [
     resourceGroups

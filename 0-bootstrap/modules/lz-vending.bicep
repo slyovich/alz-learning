@@ -55,6 +55,20 @@ module subscriptionVending 'br/public:avm/ptn/lz/sub-vending:0.5.3' = {
               location: location
               securityRules: [
                 {
+                  name: 'AllowInternalHTTPSCommunication'
+                  properties: {
+                    access: 'Allow'
+                    description: 'Allow internal HTTPS communication'
+                    destinationAddressPrefix: 'VirtualNetwork'
+                    destinationPortRange: '443'
+                    direction: 'Inbound'
+                    priority: 200
+                    protocol: 'Tcp'
+                    sourceAddressPrefixes: ['10.0.1.32/28']
+                    sourcePortRange: '*'
+                  }
+                }
+                {
                   name: 'DenyAllInbound'
                   properties: {
                     access: 'Deny'
