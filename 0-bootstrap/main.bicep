@@ -77,6 +77,8 @@ module virtualMachine 'modules/virtualmachine.bicep' = {
   scope: resourceGroup(existingSubscriptionId, 'rg-devops-${locationShortName}-001')
   params: {
     vmName: 'vm-bootstrap-${locationShortName}-001'
+    bastionName: 'bastion-bootstrap-${locationShortName}-001'
+    virtualNetworkResourceId: '/subscriptions/${existingSubscriptionId}/resourceGroups/rg-connectivity-${locationShortName}-001/providers/Microsoft.Network/virtualNetworks/vnet-connectivity-${locationShortName}-002'
     subnetId: '/subscriptions/${existingSubscriptionId}/resourceGroups/rg-connectivity-${locationShortName}-001/providers/Microsoft.Network/virtualNetworks/vnet-connectivity-${locationShortName}-002/subnets/snet-bootstrap-privateendpoints'
     adminUsername: adminUsername
     adminPublicKey: adminPublicKey

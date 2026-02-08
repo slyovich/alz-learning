@@ -1,6 +1,12 @@
 @description('The name of the virtual machine.')
 param vmName string
 
+@description('The name of the bastion host.')
+param bastionName string
+
+@description('The virtual network resource ID for the private endpoint.')
+param virtualNetworkResourceId string
+
 @description('Specifies the subnet resource ID for the private endpoint.')
 param subnetId string
 
@@ -60,5 +66,17 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
         path: '/home/${adminUsername}/.ssh/authorized_keys'
       }
     ]
+  }
+}
+
+module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = {
+  name: 'lz-vending-bastion'
+  params: {
+    // Required parameters
+    name: bastionName
+    virtualNetworkResourceId: virtualNetworkResourceId
+    // Non-required parameters
+    location: resourceGroup().location
+    skuName: 'Developer'
   }
 }
