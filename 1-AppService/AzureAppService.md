@@ -255,6 +255,9 @@ Portal → Networking → Public Access = Disabled
 ---
 
 <style scoped>
+  h2 {
+    font-size: 28px;
+  }
   ul {
     font-size: 18px;
   }
@@ -271,15 +274,16 @@ Portal → Networking → Public Access = Disabled
 
 ## ✅ Nouveautés
 
-- ✅ **Trafic 100% privé** Azure backbone
+- ✅ **Trafic inbound 100% privé** Azure backbone
 - ✅ **NSG sur endpoint** (contrôle fine)
 - ✅ Zéro IP publique
 
 ## ❌ Limitations
 
-- ❌ Pas d'accès Internet direct
+- ❌ Pas d'accès depuis Internet direct
 - ❌ Complexité DNS (Private DNS Zone)
 - ❌ Toujours pas de WAF
+- ❌ Pas de contrôle des flux sortants
 
 ---
 
@@ -302,6 +306,54 @@ curl https://monapp.azurewebsites.net
 
 ---
 
+<style scoped>
+  h2 {
+    font-size: 28px;
+  }
+  ul {
+    font-size: 18px;
+  }
+</style>
+
+# 📤 Étape 3.5 : VNet Integration
+
+## ✅ Concept
+
+- Permet à l'App Service d'accéder aux ressources du VNet (SQL, Storage, On-prem).
+- **Route All** : Force tout le trafic sortant (Internet inclus) à passer par le VNet.
+- **Firewall** : Permet de forcer le routage du trafic sortant vers un Firewall.
+- **Internet access** : Deny par défaut pour rendre l'exploitation d'une faille dans un conteneur plus complexe (ex. évite la création d'un reverse shell qui facilite l'exploitation).
+
+## ⚙️ Configuration
+
+- Subnet dédié avec délégation *Microsoft.Web/serverFarms*.
+- Activation de l'option **VNet Route All**.
+- Utilisation d'une **User Defined Route (UDR)** pour rediriger le trafic vers un Firewall.
+
+## 🛡️ Sécurité & Contrôle
+
+- ✅ **Filtrage FQDN** : Sortie via Azure Firewall pour autoriser uniquement certains domaines.
+- ✅ **NSG** : Contrôle des flux sortants directement sur le subnet d'intégration.
+- ✅ **IP de sortie fixe** : Utilisation d'une NAT Gateway ou de l'IP du Firewall pour l'identification IP.
+
+---
+
+# 📤 Étape 3.5 : Demo
+
+```bash
+# Depuis VM dans VNet (via Bastion)
+# Test DNS
+nslookup monapp.azurewebsites.net
+# Result: monapp.privatelink.azurewebsites.net → 10.0.1.10
+
+# Accès en échec
+curl https://monapp.azurewebsites.net
+# ❌ 500 OK
+# L'appel vers l'API publique échoue car le flux sortant du réseau est bloqué par une règle NSG
+```
+
+---
+
 # 🛡️ Étape 4 : Application Gateway + WAF
 
 ## Architecture complète
@@ -314,6 +366,7 @@ Internet ←→ App Gateway (Public IP)
          VNet ←→ PE → App Service
 ```
 
+<!--
 ---
 
 # 🛡️ Étape 4 : Setup
@@ -337,6 +390,7 @@ Portal → HTTP Settings → HTTPS → Port 443
 Portal → WAF Policy → Create
   → Rules : SQL Injection, XSS, Command Injection
 ```
+-->
 
 ---
 
@@ -350,6 +404,7 @@ Portal → WAF Policy → Create
 - ✅ Session affinity
 - ✅ Health probes
 
+<!--
 ---
 
 # 🛡️ Étape 4 : Capacités applicatives
@@ -368,10 +423,14 @@ app.UseHttpsRedirection();
 // Rewrites & redirects
 app.MapGet("/old-api", () => Results.Redirect("/api/v2"));
 ```
+-->
 
 ---
 
 <style scoped>
+  h2 {
+    font-size: 32px;
+  }
   ul {
     font-size: 24px;
   }
@@ -393,8 +452,9 @@ app.MapGet("/old-api", () => Results.Redirect("/api/v2"));
 
 ## ❌ Pas encore d'authentification
 
-- ❌ Toujours pas de vérification utilisateur
+- ❌ Pas de vérification utilisateur au niveau infrastructure
 
+<!--
 ---
 
 # 🛡️ Étape 4 : Demo
@@ -419,6 +479,7 @@ curl https://contoso.com/api
 curl https://contoso.com/images
 # → Backend pool : storage-static
 ```
+-->
 
 ---
 
@@ -448,12 +509,6 @@ Portal → App Service → Authentication → Add identity provider
 
 # 2. App Gateway → Client Certificate (optionnel)
 # Pour mTLS bidirectionnel
-
-# 3. RBAC sur App Service
-az role assignment create \
-  --assignee <service-principal-id> \
-  --role Reader \
-  --scope /subscriptions/.../monapp
 ```
 
 ---
@@ -492,6 +547,7 @@ if (User.IsInRole("Admin")) {
 // (middleware appliqué par App Service Auth)
 ```
 
+<!--
 ---
 
 # 🔑 Étape 5 : Demo
@@ -511,28 +567,33 @@ User.Identity.Name = "user@contoso.com"
 User.FindFirst("preferred_username").Value = "alice.smith@contoso.com"
 User.FindFirst("oid").Value = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ```
+-->
 
 ---
 
-# 📊 Matrice décisionnelle
+# 📊 Environnement d'entreprise
 
 | Critère | Public | IP Restrict | Private EP | App GW | Zero Trust |
 |---------|--------|-------------|------------|--------|------------|
-| **Dev rapide** | ✅ | ✅ | ⚠️ | ❌ | ❌ |
-| **Prod interne** | ❌ | ⚠️ | ✅ | ✅ | ✅ |
-| **Prod public** | ❌ | ❌ | ❌ | ✅ | ✅✅ |
-| **WAF L7** | ❌ | ❌ | ❌ | ✅ | ✅ |
-| **Zero Trust** | ❌ | ❌ | ⚠️ | ✅ | ✅✅ |
-| **Coût /mois** | $13 | $13 | $20 | $200 | $250 |
+| **Sandbox** | ✅ | ✅ | ⚠️ | ❌ | ❌ |
+| **Landing Zone Online** | ✅ | ✅ | ⚠️ | ❌ | ✅✅ |
+| **Landing Zone Corp** | ❌ | ❌ | ✅ | ✅ | ✅✅ |
 
 ---
 
 <style scoped>
+  h2 {
+    font-size: 30px;
+  }
   ul {
     font-size: 20px;
   }
-  pre, code {
-    font-size: 12px;
+  table{
+    font-size: 20px;
+  }
+  blockquote {
+    margin: 50px 0;
+    font-size: 20px;
   }
 </style>
 
@@ -540,18 +601,19 @@ User.FindFirst("oid").Value = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 
 ## App Service Tier
 
-- **B1** (Basic) : $13/mois
-- **S1** (Standard) : $74/mois
-- **P1** (Premium) : $220/mois
+- **B1** (Basic, dev environment) : CHF 12.00/mois
+- **P0V3** (Premium, prod environment) : CHF 55.00/mois
 
 ## Composants additionnels
 
 | Composant | Coût |
 |-----------|------|
-| **Private Endpoint** | ~$7/mois + data |
-| **App Gateway** | ~$180/mois (Standard_v2) |
-| **WAF** | ~$200/mois (WAF_v2) |
-| **Private DNS Zone** | ~$1/mois |
+| **Private Endpoint** | CHF 6.00/mois (incl. 10GB data transfer) |
+| **App Gateway Standard** | CHF 160.00/mois (Standard_v2) |
+| **App Gateway WAF** | CHF 275.00/mois (WAF_v2) |
+| **Private DNS Zone** | CHF 1.00/mois |
+
+> **Note** les coûts sont estimés en CHF pour la région Switzerland North
 
 ---
 
@@ -560,8 +622,8 @@ User.FindFirst("oid").Value = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ## Design & Gouvernance
 
 ```
-✅ Utiliser Private Endpoint pour PaaS critiques
-✅ App Gateway + WAF pour prod public
+✅ Utiliser Private Endpoint
+✅ App Gateway + WAF
 ✅ Entra ID pour authentification (Zero Trust)
 ✅ Managed Identity (pas de secrets en code)
 ✅ Activity Logs + NSG Flow Logs monitoring
@@ -570,10 +632,9 @@ User.FindFirst("oid").Value = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ## IaC & Automation
 
 ```
-✅ Bicep/Terraform modules (gateway, app, dns)
-✅ Azure Policy : forcer Private Endpoint
-✅ Azure Policy : forcer HTTPS
-✅ GitHub Actions : deploy automatisé
+✅ Bicep/Terraform modules
+✅ Azure Policy : Enforce governance
+✅ Azure DevOps : deploy automatisé
 ```
 
 ---
@@ -584,9 +645,8 @@ User.FindFirst("oid").Value = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 
 ```
 ✅ NSG sur App Gateway subnet (allow 443, 80 public)
+✅ Firewall pour contrôle des flux réseau
 ✅ NSG sur Private Endpoint subnet (deny except from gateway)
-✅ UDR via Azure Firewall (inspection centralisée)
-✅ DDoS Protection Standard
 ```
 
 ## Monitoring & Auditing
@@ -600,55 +660,13 @@ User.FindFirst("oid").Value = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 
 ---
 
-<style scoped>
-  h2 {
-    font-size: 23px;
-  }
-</style>
-
-# 🧠 Recommandation par cas
-
-## Startup / Dev
-
-```
-→ Étape 1 ou 2 (Public + IP Restrict)
-→ Passer à Étape 4-5 avant prod
-```
-
-## Prod interne
-
-```
-→ Étape 3 (Private Endpoint)
-→ Ajouter Étape 5 (Auth Entra)
-```
-
-## Prod public (transactionnel)
-
-```
-→ Étape 4 (App Gateway + WAF)
-→ Étape 5 (Zero Trust + Entra)
-→ Multi-region avec Azure Front Door
-```
-
----
-
 # 🎓 Key Takeaways
 
-1. **Commencez simple** : Public OK pour dev/test
+1. **Commencez simple** : Public OK pour de l'apprentissage
 2. **Sécurisez progressivement** : Private EP → App GW → Auth
-3. **Mesurez l'impact** : Coût vs sécurité
-4. **Automatisez** : Bicep/Terraform obligatoire en prod
+3. **Mesurez l'impact** : Coût, sécurité, performance
+4. **Automatisez** : Bicep/Terraform obligatoire à partir de test
 5. **Auditez** : Activity Logs + NSG Flow Logs
-
----
-
-# 🚀 Prochaines étapes
-
-1. **Lab** : Déployer les 5 étapes (2h)
-2. **Questions** : Session Q&A
-3. **Ressources** :
-   - https://learn.microsoft.com/azure/app-service/
-   - https://learn.microsoft.com/azure/application-gateway/
 
 ---
 
