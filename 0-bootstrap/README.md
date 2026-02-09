@@ -98,8 +98,7 @@ graph TD
     NSG --"AllowInternalHTTPS (200)"--> Allowed((Allowed))
     Allowed --> PE
     
-    VM --"Outbound (Any other)"--> NSG
-    NSG --"DenyAllOutbound (999)"--> BlockedOut((Blocked))
+    VM --"Outbound (Any other)"--> NSG --> Allowed((Allowed))
     
     %% Labels
     linkStyle 0 stroke:red,stroke-width:2px;
@@ -107,7 +106,7 @@ graph TD
     linkStyle 4 stroke:red,stroke-width:2px;
 ```
 
-> **Note**: The current configuration is highly restrictive. The `DenyAllOutbound` rule effectively isolates resources in this subnet, preventing them from initiating connections to external destinations or other subnets. The `AllowInternalHTTPSCommunication` ensures the VM can access the Storage Account via Private Link within the same subnet.
+> **Note**: The `AllowInternalHTTPSCommunication` ensures the VM can access the Storage Account via Private Link within the same subnet.
 
 ## Prerequisites
 
