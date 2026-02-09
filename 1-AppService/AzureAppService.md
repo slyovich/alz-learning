@@ -40,9 +40,31 @@ style: |
 
 ### De Public à Zero Trust
 
-**Auteur :** Cloud Architecture Team  
+**Auteur :** Sylvain Riquen, Cloud Technical Architecte  
 **Date :** février 2026  
 **Audience :** Équipe Développement
+
+---
+
+<style scoped>
+  blockquote {
+    margin: 70px 0;
+    font-size: 26px;
+  }
+</style>
+
+# 📦 Introduction
+
+## Ce que nous allons voir
+- Un parcours de sécurisation progressif d'une Web App
+- De l'exposition publique naïve à une architecture Zero Trust
+- Les impacts techniques et financiers à chaque étape
+
+## Pourquoi ce talk ?
+- La sécurité n'est pas une option, c'est une nécessité
+- Comprendre les couches de défense en profondeur
+
+> 💡 **Note :** Je ne touche aucune commission sur la vente d'App Services ! 💸😉
 
 ---
 
