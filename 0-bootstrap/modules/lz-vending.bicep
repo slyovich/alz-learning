@@ -82,20 +82,6 @@ module subscriptionVending 'br/public:avm/ptn/lz/sub-vending:0.5.3' = {
                     sourcePortRange: '*'
                   }
                 }
-                {
-                  name: 'DenyAllOutbound'
-                  properties: {
-                    access: 'Deny'
-                    description: 'Deny all outbound traffic'
-                    destinationAddressPrefix: '*'
-                    destinationPortRange: '*'
-                    direction: 'Outbound'
-                    priority: 999
-                    protocol: '*'
-                    sourceAddressPrefixes: ['*']
-                    sourcePortRange: '*'
-                  }
-                }
               ]
             }
             privateEndpointNetworkPolicies: 'Enabled'
