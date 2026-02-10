@@ -603,7 +603,7 @@ User.FindFirst("oid").Value = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 | **Sandbox** | ✅ | ✅ | ⚠️ | ❌ | ❌ |
 | **Landing Zone Online** | ✅ | ✅ | ⚠️ | ❌ | ✅✅ |
 | **Landing Zone Corp** | ❌ | ❌ | ✅ | ✅ | ✅✅ |
-
+<!--
 ---
 
 <style scoped>
@@ -639,7 +639,8 @@ User.FindFirst("oid").Value = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 | **Private DNS Zone** | CHF 1.00/mois |
 
 > **Note** les coûts sont estimés en CHF pour la région Switzerland North
-
+-->
+<!--
 ---
 
 # ✅ Best Practices
@@ -681,7 +682,7 @@ User.FindFirst("oid").Value = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ✅ Activity Logs (qui a changé quoi)
 ✅ Alertes : Failed requests, high latency
 ```
-
+-->
 ---
 
 # 🎓 Key Takeaways
