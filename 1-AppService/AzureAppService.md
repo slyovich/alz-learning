@@ -58,7 +58,7 @@ style: |
 ## Ce que nous allons voir
 - Un parcours de sécurisation progressif d'une Web App
 - De l'exposition publique naïve à une architecture Zero Trust
-- Les impacts techniques et financiers à chaque étape
+- Les impacts techniques à chaque étape
 
 ## Pourquoi ce talk ?
 - La sécurité n'est pas une option, c'est une nécessité
@@ -81,6 +81,12 @@ style: |
 
 ---
 
+<style scoped>
+  pre, code {
+    font-size: 16px;
+  }
+</style>
+
 # 🎯 Architecture globale
 
 ```
@@ -93,15 +99,18 @@ style: |
 Étape 3 : Private Endpoint
   VNet ←→ Private Endpoint ←→ App Service (Private)
 
+Étape 3.5 : VNet Integration
+  App Service ←→ VNet ←→ Firewall (Outbound control) ß←→ Internet
+
 Étape 4 : Application Gateway + WAF
   Internet ←→ App Gateway (WAF) 
                ↓ Private
-            VNet ←→ App Service
+            VNet ←→ Private Endpoint ←→ App Service
 
 Étape 5 : Zero Trust + Entra ID
-  Internet ←→ App Gateway (mTLS)
-               ↓ Managed Identity
-            Entra ID ←→ App Service Auth
+  Internet ←→ App Gateway (WAF + mTLS (optional))
+               ↓ Authentified user
+            VNet ←→ Private Endpoint ←→ App Service Auth ←→ Code applicatif
 ```
 
 ---
@@ -644,9 +653,8 @@ User.FindFirst("oid").Value = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ## Sécurité réseau
 
 ```
-✅ NSG sur App Gateway subnet (allow 443, 80 public)
 ✅ Firewall pour contrôle des flux réseau
-✅ NSG sur Private Endpoint subnet (deny except from gateway)
+✅ NSG sur Private Endpoint subnet (deny except from authorized sources)
 ```
 
 ## Monitoring & Auditing
@@ -663,10 +671,10 @@ User.FindFirst("oid").Value = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 # 🎓 Key Takeaways
 
 1. **Commencez simple** : Public OK pour de l'apprentissage
-2. **Sécurisez progressivement** : Private EP → App GW → Auth
+2. **Sécurisez progressivement** : Private EP → App GW/APIM → Auth
 3. **Mesurez l'impact** : Coût, sécurité, performance
 4. **Automatisez** : Bicep/Terraform obligatoire à partir de test
-5. **Auditez** : Activity Logs + NSG Flow Logs
+5. **Auditez** : Application Insights + Activity Logs + NSG Flow Logs
 
 ---
 
