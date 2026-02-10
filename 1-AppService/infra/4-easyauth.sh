@@ -25,6 +25,11 @@ az webapp config appsettings set \
   --name $WEBAPP_NAME \
   --settings "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET=$APPREG_SECRET" WEBSITE_AUTH_AAD_ALLOWED_TENANTS="$TENANT_ID"
 
+echo "Upgrading EasyAuth configuration for the web app..."
+az webapp auth config-version upgrade \
+  --resource-group $RG_NAME \
+  --name $WEBAPP_NAME
+
 echo "Enabling EasyAuth for the web app..."
 az webapp auth update \
   --resource-group $RG_NAME \

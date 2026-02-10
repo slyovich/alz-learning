@@ -1,0 +1,1 @@
+curl -v -H 'Cache-Control: no-cache' "https://app-alz-learning-chn-xxx.azurewebsites.net"
