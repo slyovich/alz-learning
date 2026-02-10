@@ -84,6 +84,7 @@ style: |
 <style scoped>
   pre, code {
     font-size: 16px;
+    padding: 10px 10px;
   }
 </style>
 
@@ -109,11 +110,19 @@ style: |
 
 Étape 5 : Zero Trust + Entra ID
   Internet ←→ App Gateway (WAF + mTLS (optional))
-               ↓ Authentified user
-            VNet ←→ Private Endpoint ←→ App Service Auth ←→ Code applicatif
+               ↓ Private
+            VNet ←→ Private Endpoint ←→ App Service Auth
+                        ↓ Authenticated user verification
+                      Code applicatif
 ```
 
 ---
+
+<style scoped>
+  h2 {
+    margin-top: 50px;
+  }
+</style>
 
 # 🌐 Étape 1 : App Service PUBLIC
 
@@ -125,17 +134,16 @@ Internet ←→ App Service (Public IP + Default Domain)
 
 ## ✅ Ce qui marche
 
-- ✅ Accès direct via browser
+- ✅ Accès direct via browser depuis n'importe où
 - ✅ Custom domain facile
 - ✅ Dev/Test rapide
-- ✅ App Service Auth (Easy Auth)
-- ✅ Staging slots, scaling
 
 ---
 
 <style scoped>
   pre, code {
     font-size: 14px;
+    padding: 10px 10px;
   }
 </style>
 
@@ -146,7 +154,7 @@ Internet ←→ App Service (Public IP + Default Domain)
 - ❌ IP publique exposée (DDoS, scans)
 - ❌ Pas de WAF (Web Application Firewall)
 - ❌ N'importe qui peut accéder
-- ❌ Pas de contrôle les flux sortants (ex. exfiltration de données)
+- ❌ Pas de contrôle les flux sortants (ex. exfiltration de données, exploitation de vulnérabilités)
 
 ## Demo
 ```bash
@@ -161,6 +169,12 @@ nslookup monapp-demo.azurewebsites.net
 ```
 
 ---
+
+<style scoped>
+  h2 {
+    margin-top: 30px;
+  }
+</style>
 
 # 🔐 Étape 2 : IP Restrictions
 
@@ -195,25 +209,24 @@ Internet ←→ [IP Whitelist] → App Service
 
 ## ✅ Ce qui marche toujours
 
-- ✅ Custom domain
-- ✅ App Service Auth
-- ✅ Slots, scaling
+- ✅ Custom domain facile
+- ✅ Dev/Test rapide
 
 ## ✅ Nouveautés
 
-- ✅ **Contrôle d'accès par IP** (whitelist)
+- ✅ **Contrôle d'accès par IP** Accès direct via browser depuis une IP autorisée
 - ✅ Azure DevOps/CLI OK (IP agents connus)
 
 ## ❌ Impact applicatif
 
-- ❌ Pas de WAF (pas de L7 inspection)
-- ❌ Toujours exposé publiquement (si IP whitelistée)
+- ❌ IP publique exposée (DDoS, scans)
+- ❌ Pas de WAF (Web Application Firewall)
+- ❌ Pas de contrôle les flux sortants (ex. exfiltration de données, exploitation de vulnérabilités)
 
 ---
 
-# 🔐 Étape 2 : Capabilities
+# 🔐 Étape 2 : Demo
 
-## Demo
 ```bash
 # Restreindre à mon IP
 Portal → Access Restrictions → Add Allow Rule → 203.0.113.100/32
@@ -225,19 +238,26 @@ curl https://monapp-demo.azurewebsites.net
 
 ---
 
+<style scoped>
+  h2 {
+    margin-top: 60px;
+  }
+</style>
+
 # 🔒 Étape 3 : Private Endpoint
 
 ## Architecture
 ```
 VNet (10.0.0.0/16)
-  └─ PE Subnet (10.0.1.0/24)
-      └─ Private Endpoint NIC (10.0.1.10)
+  └─ PE Subnet (10.0.0.0/24)
+      └─ Private Endpoint NIC (10.0.0.10)
          ↓ Azure Backbone
         App Service (Disabled Public Access)
 
 Internet ❌ (sauf via VPN/ExpressRoute)
 ```
 
+<!--
 ---
 
 # 🔒 Étape 3 : Setup
@@ -260,12 +280,13 @@ az network private-endpoint create \
 # 3. Désactiver accès public
 Portal → Networking → Public Access = Disabled
 ```
-
+-->
 ---
 
 <style scoped>
   h2 {
-    font-size: 28px;
+    font-size: 30px;
+    margin-top: 35px;
   }
   ul {
     font-size: 18px;
@@ -276,23 +297,19 @@ Portal → Networking → Public Access = Disabled
 
 ## ✅ Ce qui marche
 
-- ✅ Accès depuis VMs dans VNet
+- ✅ Accès depuis une ressource dans le VNet
 - ✅ Custom domain (DNS privé)
-- ✅ App Service Auth
-- ✅ Slots, scaling
 
 ## ✅ Nouveautés
 
 - ✅ **Trafic inbound 100% privé** Azure backbone
-- ✅ **NSG sur endpoint** (contrôle fine)
+- ✅ **NSG sur endpoint** Contrôle fine des flux entrants
 - ✅ Zéro IP publique
 
-## ❌ Limitations
+## ❌ Impact applicatif
 
-- ❌ Pas d'accès depuis Internet direct
-- ❌ Complexité DNS (Private DNS Zone)
-- ❌ Toujours pas de WAF
-- ❌ Pas de contrôle des flux sortants
+- ❌ Pas de WAF (Web Application Firewall)
+- ❌ Pas de contrôle les flux sortants (ex. exfiltration de données, exploitation de vulnérabilités)
 
 ---
 
@@ -337,7 +354,6 @@ curl https://monapp.azurewebsites.net
 
 - Subnet dédié avec délégation *Microsoft.Web/serverFarms*.
 - Activation de l'option **VNet Route All**.
-- Utilisation d'une **User Defined Route (UDR)** pour rediriger le trafic vers un Firewall.
 
 ## 🛡️ Sécurité & Contrôle
 
@@ -434,6 +450,7 @@ app.MapGet("/old-api", () => Results.Redirect("/api/v2"));
 ```
 -->
 
+<!--
 ---
 
 <style scoped>
@@ -462,6 +479,7 @@ app.MapGet("/old-api", () => Results.Redirect("/api/v2"));
 ## ❌ Pas encore d'authentification
 
 - ❌ Pas de vérification utilisateur au niveau infrastructure
+-->
 
 <!--
 ---
@@ -497,15 +515,13 @@ curl https://contoso.com/images
 ## Architecture finale
 
 ```
-Internet ←→ App Gateway (WAF + mTLS)
-            ↓ Managed Identity
-         Entra ID ←── Token validation
-            ↓
-         VNet ←→ PE → App Service Auth
-                         ↓ User Claims
-                      Code applicatif
+Internet ←→ App Gateway (WAF + mTLS (optional))
+              ↓ Private
+          VNet ←→ Private Endpoint ←→ App Service Auth
+                      ↓ Authenticated user verification
+                    Code applicatif
 ```
-
+<!--
 ---
 
 # 🔑 Étape 5 : Setup Entra ID
@@ -519,7 +535,7 @@ Portal → App Service → Authentication → Add identity provider
 # 2. App Gateway → Client Certificate (optionnel)
 # Pour mTLS bidirectionnel
 ```
-
+-->
 ---
 
 <style scoped>
