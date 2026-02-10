@@ -64,7 +64,14 @@ az webapp identity assign \
   --resource-group "$RG_NAME"
 
 # ==============================================================================
-# 5. Final Output
+# 5. Deploy app
+# ==============================================================================
+echo "Deploying app..."
+cd ../api
+./deploy.sh
+
+# ==============================================================================
+# 6. Final Output
 # ==============================================================================
 echo "Deployment Complete!"
 echo "Web App URL: https://$WEBAPP_NAME.azurewebsites.net"
