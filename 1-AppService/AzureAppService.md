@@ -685,13 +685,9 @@ User.FindFirst("oid").Value = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 -->
 ---
 
-# 🎓 Key Takeaways
+# 🎓 Résumé
 
-1. **Commencez simple** : Public OK pour de l'apprentissage
-2. **Sécurisez progressivement** : Private EP → App GW/APIM → Auth
-3. **Mesurez l'impact** : Coût, sécurité, performance
-4. **Automatisez** : Bicep/Terraform obligatoire à partir de test
-5. **Auditez** : Application Insights + Activity Logs + NSG Flow Logs
+*Illustration du chemin parcouru*
 
 ---
 
