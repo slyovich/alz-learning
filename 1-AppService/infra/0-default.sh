@@ -55,7 +55,8 @@ az webapp update \
   --resource-group "$RG_NAME" \
   --https-only true \
   --set siteConfig.minTlsVersion=1.2 \
-  --set siteConfig.ftpsState=FTPSOnly
+  --set siteConfig.ftpsState=FTPSOnly \
+  --set siteConfig.alwaysOn=true
 
 # Assign System Assigned Identity
 echo "Assigning System Identity..."
