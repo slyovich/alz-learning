@@ -221,7 +221,7 @@ Internet ←→ [IP Whitelist] → App Service
 
 - ❌ IP publique exposée (DDoS, scans)
 - ❌ Pas de WAF (Web Application Firewall)
-- ❌ Pas de contrôle les flux sortants (ex. exfiltration de données, exploitation de vulnérabilités)
+- ❌ Pas de contrôle des flux sortants (ex. exfiltration de données, exploitation de vulnérabilités)
 
 ---
 
@@ -303,7 +303,7 @@ Portal → Networking → Public Access = Disabled
 ## ✅ Nouveautés
 
 - ✅ **Trafic inbound 100% privé** Azure backbone
-- ✅ **NSG sur endpoint** Contrôle fine des flux entrants
+- ✅ **NSG sur endpoint** Contrôle fin des flux entrants
 - ✅ Zéro IP publique
 
 ## ❌ Impact applicatif
@@ -601,7 +601,7 @@ User.FindFirst("oid").Value = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 | Critère | Public | IP Restrict | Private EP | App GW | Zero Trust |
 |---------|--------|-------------|------------|--------|------------|
 | **Sandbox** | ✅ | ✅ | ⚠️ | ❌ | ❌ |
-| **Landing Zone Online** | ✅ | ✅ | ⚠️ | ❌ | ✅✅ |
+| **Landing Zone Online** | ✅ | ✅ | ⚠️ | ❌ | ✅ |
 | **Landing Zone Corp** | ❌ | ❌ | ✅ | ✅ | ✅✅ |
 <!--
 ---
