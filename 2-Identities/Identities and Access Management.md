@@ -23,7 +23,7 @@ style: |
   table {
     font-size: 0.85em;
   }
-  .columns {
+  .columns-1 {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
@@ -67,6 +67,7 @@ style: |
 - Les différents types d'identités dans Azure (managed vs non-managed)
 - Les types d'applications dans Entra ID
 - La sécurisation RBAC des services Azure
+- La sécurisation Entra ID des communications entre services
 
 > 💡 **Objectif :** Comprendre comment Azure gère les identités pour sécuriser vos services et vos communications.
 
@@ -79,7 +80,8 @@ style: |
 3. Identités non-managées (Service Principals & secrets)
 4. App Registrations Entra ID
 5. RBAC : sécuriser l'accès aux services Azure
-6. Take Away & Q&A
+6. Entra ID : sécuriser les communications entre services
+7. Take Away & Q&A
 
 ---
 
@@ -529,56 +531,99 @@ resource "azurerm_role_assignment" "group_reader" {
 }
 ```
 
-<!-- ---
+---
 
 <style scoped>
   pre, code {
     font-size: 15px;
     padding: 10px 10px;
   }
+  h1 {
+    font-size: 40px;
+  }
   h2 {
-    font-size: 28px;
-    margin-top: 25px;
+    font-size: 30px;
+    margin-top: 35px;
+  }
+  h3 {
+    font-size: 26px;
+    margin-top: 45px;
   }
   ol {
     margin-top: 0px;
     margin-left: 0px;
     font-size: 20px;
   }
+  p {
+    font-size: 18px;
+  }
 </style>
 
-# 🔄 Communication service-à-service
+# 🔄 Entra ID : sécuriser les communications entre services
 
-## Architecture typique
+## Use Cases
+
+<div class="columns-1">
+<div>
+
+### Authentification utilisateur
+
+Un utilisateur se connecte à une application web qui consomme une API protégée par Entra ID.
 
 ```
-App Service (Managed Identity)
-    ↓ Token request (Client Credentials Flow)
+Utilisateur
+    ↓ Token request (Authorization Code Flow)
 Entra ID
-    ↓ Access Token (audience = target API)
-API Backend / Key Vault / SQL / Storage
+    ↓ ID Token + Access Token (audience = target API)
+API Backend
     ↓ Valide le token (issuer + audience + claims)
 Réponse
 ```
 
-## Flux détaillé
+</div>
+<div>
 
-1. Le service source demande un token à Entra ID via sa **Managed Identity**
-2. Entra ID vérifie l'identité et émet un **access token** avec l'audience cible
-3. Le service source appelle le service cible avec le token dans le header `Authorization: Bearer <token>`
-4. Le service cible **valide le token** (signature, expiration, audience, claims)
-5. L'accès est autorisé ✅
+### Authentification service-à-service
+
+Un service client (ex. eFNOL backend) accède à une API protégée par Entra ID.
+
+```
+Service client (ex. Managed Identity)
+    ↓ Token request (Client Credentials Flow)
+Entra ID
+    ↓ Access Token (audience = target API)
+API Backend
+    ↓ Valide le token (issuer + audience + claims)
+Réponse
+```
+
+</div>
+</div>
 
 ---
 
+- Configurer l'app registration pour la Web API
+- Configurer l'app registration pour le service client
+- Faire une demo avec Postman
+- Faire une demo avec un service client (ex. console app)
+
+<!--
+---
+
 <style scoped>
+  h1 {
+    font-size: 34px;
+  }
+  h2 {
+    font-size: 28px;
+  }
   pre, code {
     font-size: 14px;
     padding: 10px 10px;
   }
 </style>
 
-# 🔄 Service-à-service : Exemple
+# 🔄 Entra ID : sécuriser les communications entre services : Exemple
 
 ## App Service → API protégée par Entra ID
 
@@ -645,8 +690,8 @@ builder.Services.AddAuthorization(options => {
 
 - Valide le **Bearer token** (signature, audience, expiration)
 - Applique l'autorisation basée sur les **claims** et **rôles** du token
--->
 
+-->
 ---
 
 <style scoped>
