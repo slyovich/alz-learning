@@ -249,9 +249,9 @@ FastAPI generates interactive API documentation automatically. The Swagger UI in
        │  1. Authorization:  │  2. Fetch JWKS keys   │
        │     Bearer <token>  │     (cached)          │
        │                     │◀──────────────────────│
-       │                     │  3. Validate JWT       │
+       │                     │  3. Validate JWT      │
        │  4. 200 OK / 401    │     (sig, aud, iss,   │
-       │◀────────────────────│      exp)              │
+       │◀────────────────────│      exp)             │
 ```
 
 ## 📁 Project Structure
