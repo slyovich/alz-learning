@@ -1,20 +1,22 @@
-"""Hello World Web API built with FastAPI — secured with Entra ID authentication."""
+"""Hello World Web API built with FastAPI — secured with Entra ID authentication
+and App Role–based authorisation."""
 
 from fastapi import Depends, FastAPI
 
-from auth import TokenClaims, validate_token
+from auth import TokenClaims, require_role
 
 app = FastAPI(
     title="Hello World API",
     description=(
         "A simple Hello World API secured with **Microsoft Entra ID** (Azure AD) "
-        "Bearer token authentication.\n\n"
-        "### 🔒 Authentication\n"
-        "All `/hello` endpoints require a valid JWT Bearer token issued by Entra ID.\n\n"
+        "Bearer token authentication and **App Role–based** authorisation.\n\n"
+        "### 🔒 Authentication & Authorisation\n"
+        "All `/hello` endpoints require a valid JWT Bearer token **and** the "
+        "appropriate App Role (`Hello.Read` or `User.Read`).\n\n"
         "Click the **Authorize** button above and paste a valid token to try the "
         "secured endpoints."
     ),
-    version="2.0.0",
+    version="3.0.0",
 )
 
 
@@ -40,15 +42,15 @@ async def health():
 
 
 # ---------------------------------------------------------------------------
-# Secured endpoints – require a valid Entra ID Bearer token
+# Secured endpoints – require a valid Entra ID Bearer token + App Role
 # ---------------------------------------------------------------------------
 
 
 @app.get("/hello", tags=["Hello"])
-async def hello(claims: TokenClaims = Depends(validate_token)):
+async def hello(claims: TokenClaims = Depends(require_role("Hello.Read"))):
     """Say hello to the authenticated user.
 
-    Requires a valid Entra ID Bearer token.
+    Requires a valid Entra ID Bearer token **and** the `Hello.Read` App Role.
     """
     name = claims.name or claims.preferred_username or "World"
     return {
@@ -62,10 +64,10 @@ async def hello(claims: TokenClaims = Depends(validate_token)):
 
 
 @app.get("/hello/{name}", tags=["Hello"])
-async def hello_name(name: str, claims: TokenClaims = Depends(validate_token)):
+async def hello_name(name: str, claims: TokenClaims = Depends(require_role("Hello.Read"))):
     """Say hello to a specific person.
 
-    Requires a valid Entra ID Bearer token.
+    Requires a valid Entra ID Bearer token **and** the `Hello.Read` App Role.
 
     Args:
         name: The name of the person to greet.
@@ -77,10 +79,10 @@ async def hello_name(name: str, claims: TokenClaims = Depends(validate_token)):
 
 
 @app.get("/me", tags=["Identity"])
-async def me(claims: TokenClaims = Depends(validate_token)):
+async def me(claims: TokenClaims = Depends(require_role("User.Read"))):
     """Return the full identity of the authenticated user.
 
-    Requires a valid Entra ID Bearer token.
+    Requires a valid Entra ID Bearer token **and** the `User.Read` App Role.
     """
     return {
         "sub": claims.sub,

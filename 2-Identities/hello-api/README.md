@@ -113,6 +113,117 @@ Without scopes:  Valid token?  → ✅ Full access to all endpoints
 With scopes:     Valid token?  → Which scopes? → ✅ Access only to matching endpoints
 ```
 
+### 3.5 Define App Roles — Role-based Authorisation
+
+#### Why use App Roles?
+
+While **scopes** control what an app can do *on behalf of a user*, **App Roles** control *who* (user, group, or application) is allowed to perform an action at all. They follow an **admin-assigned** model, meaning a tenant admin decides which principals receive which roles.
+
+| Benefit                | Description                                                                                   |
+|------------------------|-----------------------------------------------------------------------------------------------|
+| **Admin-controlled**   | Only a tenant admin can assign roles — users cannot self-grant access                         |
+| **Works for apps too** | App Roles appear in the `roles` claim for *both* interactive users and client-credentials apps |
+| **Coarse-grained**     | Ideal for profile-level access (Reader, Writer, Admin) rather than per-action                 |
+| **Group-assignable**   | A role can be assigned to an Entra ID group, automatically granting it to all group members   |
+
+#### Example App Roles for this API
+
+| Role Value   | Display Name        | Allowed Member Types       | Grants access to                  |
+|--------------|---------------------|----------------------------|-----------------------------------|
+| `Hello.Read` | Hello Reader        | Users/Groups, Applications | `GET /hello`, `GET /hello/{name}` |
+| `User.Read`  | User Profile Reader | Users/Groups, Applications | `GET /me`                         |
+
+#### Configure App Roles in Entra ID
+
+1. In the **API** App Registration → **App roles** → **Create app role**
+2. For each role fill in:
+   - **Display name**: e.g. *Hello Reader*
+   - **Allowed member types**: *Both (Users/Groups + Applications)*
+   - **Value**: `Hello.Read`
+   - **Description**: *Can call the hello endpoints*
+3. Repeat for `User.Read`
+
+Alternatively, edit the **Manifest** directly and add an `appRoles` array:
+
+```json
+"appRoles": [
+  {
+    "allowedMemberTypes": ["User", "Application"],
+    "displayName": "Hello Reader",
+    "id": "<generate-a-unique-guid>",
+    "isEnabled": true,
+    "description": "Can call the hello endpoints",
+    "value": "Hello.Read"
+  },
+  {
+    "allowedMemberTypes": ["User", "Application"],
+    "displayName": "User Profile Reader",
+    "id": "<generate-a-unique-guid>",
+    "isEnabled": true,
+    "description": "Can call the /me endpoint",
+    "value": "User.Read"
+  }
+]
+```
+
+#### Assign App Roles
+
+**For users / groups** (interactive flows):
+
+1. Go to **Enterprise Applications** → select `Hello World API`
+2. **Users and groups** → **Add user/group**
+3. Select the user or group, then pick the role (`Hello.Read`, `User.Read`, or both)
+
+**For client applications** (client-credentials flow):
+
+1. In the **client** App Registration → **API permissions** → **Add a permission**
+2. Select **My APIs** → `Hello World API` → **Application permissions**
+3. Tick the role(s) you need → **Add permissions**
+4. Click **Grant admin consent** (required because Application permissions always need admin consent)
+
+#### Enforce App Roles in the code
+
+The `require_role` dependency in `auth.py` verifies the `roles` claim:
+
+```python
+def require_role(required: str):
+    """FastAPI dependency that enforces a specific App Role."""
+    def _check(claims: TokenClaims = Depends(validate_token)):
+        if required not in (claims.roles or []):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Missing required role: {required}",
+            )
+        return claims
+    return _check
+```
+
+Then use it in `main.py`:
+
+```python
+from auth import TokenClaims, require_role
+
+@app.get("/hello")
+async def hello(claims: TokenClaims = Depends(require_role("Hello.Read"))):
+    ...
+
+@app.get("/hello/{name}")
+async def hello_name(name: str, claims: TokenClaims = Depends(require_role("Hello.Read"))):
+    ...
+
+@app.get("/me")
+async def me(claims: TokenClaims = Depends(require_role("User.Read"))):
+    ...
+```
+
+The complete access model:
+
+```text
+No auth:       → ✅ Public endpoints only (/  /health)
+Valid token:   → ❌ 403 if missing required role
+Token + role:  → ✅ Access to role-matched endpoints
+```
+
 ### 4. Register a client application (to obtain tokens)
 
 To call this API, you need a **client** app registration:
@@ -162,13 +273,13 @@ The API will be available at **<http://127.0.0.1:8000>**.
 
 ## 📡 Endpoints
 
-| Method | Path            | Auth Required | Description                             |
-|--------|-----------------|---------------|-----------------------------------------|
-| `GET`  | `/`             | ❌ No          | API info & link to documentation        |
-| `GET`  | `/health`       | ❌ No          | Health-check endpoint                   |
-| `GET`  | `/hello`        | ✅ Yes         | Greets the authenticated user           |
-| `GET`  | `/hello/{name}` | ✅ Yes         | Greets a specific person                |
-| `GET`  | `/me`           | ✅ Yes         | Returns the authenticated user's claims |
+| Method | Path            | Auth Required | Role Required | Description                              |
+|--------|-----------------|---------------|---------------|------------------------------------------|
+| `GET`  | `/`             | ❌ No         | —             | API info & link to documentation         |
+| `GET`  | `/health`       | ❌ No         | —             | Health-check endpoint                    |
+| `GET`  | `/hello`        | ✅ Yes        | `Hello.Read`  | Greets the authenticated user            |
+| `GET`  | `/hello/{name}` | ✅ Yes        | `Hello.Read`  | Greets a specific person                 |
+| `GET`  | `/me`           | ✅ Yes        | `User.Read`   | Returns the authenticated user's claims  |
 
 ## 🧪 Testing the API
 
@@ -250,8 +361,12 @@ FastAPI generates interactive API documentation automatically. The Swagger UI in
        │     Bearer <token>  │     (cached)          │
        │                     │◀──────────────────────│
        │                     │  3. Validate JWT      │
-       │  4. 200 OK / 401    │     (sig, aud, iss,   │
-       │◀────────────────────│      exp)             │
+       │                     │     (sig, aud, iss,   │
+       │                     │      exp)             │
+       │                     │  4. Check App Role    │
+       │                     │     (roles claim)     │
+       │  5. 200 / 401 / 403 │                       │
+       │◀────────────────────│                       │
 ```
 
 ## 📁 Project Structure

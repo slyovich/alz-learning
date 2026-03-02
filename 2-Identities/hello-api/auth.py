@@ -3,6 +3,9 @@
 This module provides JWT Bearer token validation against Microsoft Entra ID.
 It fetches the OpenID Connect metadata and JWKS signing keys automatically,
 and validates incoming tokens for issuer, audience, and signature.
+
+Additionally exposes ``require_role`` – a dependency factory that enforces
+App Role membership on individual endpoints.
 """
 
 import logging
@@ -188,3 +191,35 @@ async def validate_token(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Unable to validate token – identity provider unavailable",
         ) from exc
+
+
+# ---------------------------------------------------------------------------
+# Role-based authorisation
+# ---------------------------------------------------------------------------
+
+
+def require_role(required: str):
+    """FastAPI dependency factory that enforces an Entra ID App Role.
+
+    Usage::
+
+        @app.get("/admin")
+        async def admin(claims: TokenClaims = Depends(require_role("Admin"))):
+            ...
+
+    The ``roles`` claim is populated by Entra ID when:
+    * A **user/group** has been *assigned* the role via Enterprise Applications, or
+    * An **application** has been granted the role (client-credentials flow).
+
+    Returns 403 Forbidden when the required role is not present in the token.
+    """
+
+    def _check(claims: TokenClaims = Depends(validate_token)) -> TokenClaims:
+        if required not in (claims.roles or []):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Missing required role: {required}",
+            )
+        return claims
+
+    return _check
