@@ -67,8 +67,6 @@ style: |
 - Les différents types d'identités dans Azure (managed vs non-managed)
 - Les types d'applications dans Entra ID
 - La sécurisation RBAC des services Azure
-- L'authentification service-à-service
-- Le flux d'authentification utilisateur (diagramme de séquence)
 
 > 💡 **Objectif :** Comprendre comment Azure gère les identités pour sécuriser vos services et vos communications.
 
@@ -279,7 +277,7 @@ resource "azurerm_role_assignment" "kv_access" {
 
 ## Concept
 
-Permet à une identité **externe** (ex. Azure DevOps Pipelin, GitHub Actions workflow, AKS Service Account) d'obtenir un token Azure **sans secret**. Ceci est une feature spécifique à Entra ID.
+Permet à une identité **externe** (ex. Azure DevOps Pipelines, GitHub Actions workflow, AKS Service Account) d'obtenir un token Azure **sans secret**. Ceci est une feature spécifique à Entra ID.
 
 ## Comment ça marche ?
 
