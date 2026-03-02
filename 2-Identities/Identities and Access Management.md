@@ -531,6 +531,7 @@ resource "azurerm_role_assignment" "group_reader" {
 }
 ```
 
+<!--
 ---
 
 <style scoped>
@@ -607,7 +608,6 @@ Réponse
 - Faire une demo avec Postman
 - Faire une demo avec un service client (ex. console app)
 
-<!--
 ---
 
 <style scoped>
