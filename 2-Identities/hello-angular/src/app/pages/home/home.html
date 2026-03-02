@@ -1,0 +1,119 @@
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-icon">🔐</span>
+      <span>Entra ID · Angular · FastAPI</span>
+    </div>
+    <h1>Hello API <span class="gradient-text">Explorer</span></h1>
+    <p class="hero-desc">
+      An Angular client secured with Microsoft Entra ID, consuming a FastAPI backend
+      with App Role–based authorisation.
+    </p>
+
+    @if (!isAuthenticated()) {
+      <button class="btn btn-primary btn-lg" (click)="login()" id="login-btn">
+        <span class="btn-icon">🚀</span>
+        Sign in with Microsoft
+      </button>
+    } @else {
+      <div class="welcome-msg">
+        <span class="welcome-icon">👋</span>
+        Welcome back, <strong>{{ userName() }}</strong>
+      </div>
+      <a routerLink="/dashboard" class="btn btn-primary btn-lg" id="go-dashboard-btn">
+        <span class="btn-icon">📊</span>
+        Go to Dashboard
+      </a>
+    }
+  </div>
+</section>
+
+<section class="status-section">
+  <h2 class="section-title">API Status</h2>
+  <div class="status-cards">
+
+    <!-- Root Info Card -->
+    <div class="card glass-card">
+      <div class="card-header">
+        <div class="card-icon">🌐</div>
+        <h3>Root Endpoint</h3>
+        <span class="endpoint-badge">GET /</span>
+      </div>
+      @if (rootInfo()) {
+        <div class="card-body">
+          <p class="api-message">{{ rootInfo()!.message }}</p>
+          <div class="card-meta">
+            <span class="meta-item">
+              <span class="meta-label">Docs</span>
+              <span class="meta-value">{{ rootInfo()!.docs }}</span>
+            </span>
+            <span class="meta-item">
+              <span class="meta-label">Auth</span>
+              <span class="meta-value">{{ rootInfo()!.auth }}</span>
+            </span>
+          </div>
+        </div>
+      } @else {
+        <div class="card-body skeleton">
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+      }
+    </div>
+
+    <!-- Health Check Card -->
+    <div class="card glass-card">
+      <div class="card-header">
+        <div class="card-icon">💚</div>
+        <h3>Health Check</h3>
+        <span class="endpoint-badge">GET /health</span>
+      </div>
+      @if (healthStatus()) {
+        <div class="card-body">
+          <div class="health-status" [class.healthy]="healthStatus()!.status === 'healthy'">
+            <span class="health-dot"></span>
+            <span class="health-text">{{ healthStatus()!.status | uppercase }}</span>
+          </div>
+        </div>
+      } @else if (loading()) {
+        <div class="card-body skeleton">
+          <div class="skeleton-line"></div>
+        </div>
+      } @else {
+        <div class="card-body">
+          <div class="health-status unhealthy">
+            <span class="health-dot"></span>
+            <span class="health-text">UNREACHABLE</span>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>
+
+<section class="features-section">
+  <h2 class="section-title">API Endpoints</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">👋</div>
+      <h3>GET /hello</h3>
+      <p>Greet the authenticated user. Requires <code>Hello.Read</code> role.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🏷️</div>
+      <h3>GET /hello/:name</h3>
+      <p>Greet a specific person by name. Requires <code>Hello.Read</code> role.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🪪</div>
+      <h3>GET /me</h3>
+      <p>Full identity of the authenticated user. Requires <code>User.Read</code> role.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💚</div>
+      <h3>GET /health</h3>
+      <p>Public health-check endpoint. No authentication required.</p>
+    </div>
+  </div>
+</section>

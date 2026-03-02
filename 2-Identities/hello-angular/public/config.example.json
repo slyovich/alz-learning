@@ -1,0 +1,6 @@
+{
+  "clientId": "YOUR_SPA_CLIENT_ID",
+  "tenantId": "YOUR_TENANT_ID",
+  "apiClientId": "YOUR_API_CLIENT_ID",
+  "apiBaseUrl": "http://127.0.0.1:8000"
+}

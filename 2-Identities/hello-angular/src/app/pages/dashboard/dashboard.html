@@ -1,0 +1,134 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>API <span class="gradient-text">Dashboard</span></h1>
+    <p class="subtitle">Interact with the secured Hello API endpoints</p>
+  </div>
+
+  <div class="api-grid">
+
+    <!-- GET /hello -->
+    <div class="api-card glass-card">
+      <div class="api-card-header">
+        <div class="api-info">
+          <span class="method-badge get">GET</span>
+          <span class="api-path">/hello</span>
+        </div>
+        <span class="role-badge">Hello.Read</span>
+      </div>
+      <p class="api-desc">Greet the authenticated user</p>
+      <button class="btn btn-primary" (click)="callHello()" [disabled]="helloResult().loading" id="call-hello-btn">
+        @if (helloResult().loading) {
+        <span class="spinner"></span> Calling…
+        } @else {
+        <span class="btn-icon">▶</span> Call Endpoint
+        }
+      </button>
+      @if (helloResult().data || helloResult().error) {
+      <div class="result-panel" [class.error]="!!helloResult().error" [class.success]="!!helloResult().data">
+        <div class="result-meta">
+          @if (helloResult().status) {
+          <span class="status-code" [class.ok]="helloResult().status === 200"
+            [class.fail]="helloResult().status !== 200">
+            {{ helloResult().status }}
+          </span>
+          }
+          @if (helloResult().duration !== null) {
+          <span class="duration">{{ helloResult().duration }}ms</span>
+          }
+        </div>
+        @if (helloResult().data) {
+        <pre class="result-json">{{ formatJson(helloResult().data) }}</pre>
+        }
+        @if (helloResult().error) {
+        <div class="result-error">{{ helloResult().error }}</div>
+        }
+      </div>
+      }
+    </div>
+
+    <!-- GET /hello/:name -->
+    <div class="api-card glass-card">
+      <div class="api-card-header">
+        <div class="api-info">
+          <span class="method-badge get">GET</span>
+          <span class="api-path">/hello/<em>:name</em></span>
+        </div>
+        <span class="role-badge">Hello.Read</span>
+      </div>
+      <p class="api-desc">Greet a specific person by name</p>
+      <div class="input-group">
+        <input type="text" class="input" placeholder="Enter a name…" [value]="customName()"
+          (input)="onNameInput($event)" id="name-input" />
+        <button class="btn btn-primary" (click)="callHelloName()" [disabled]="helloNameResult().loading"
+          id="call-hello-name-btn">
+          @if (helloNameResult().loading) {
+          <span class="spinner"></span>
+          } @else {
+          <span class="btn-icon">▶</span>
+          }
+        </button>
+      </div>
+      @if (helloNameResult().data || helloNameResult().error) {
+      <div class="result-panel" [class.error]="!!helloNameResult().error" [class.success]="!!helloNameResult().data">
+        <div class="result-meta">
+          @if (helloNameResult().status) {
+          <span class="status-code" [class.ok]="helloNameResult().status === 200"
+            [class.fail]="helloNameResult().status !== 200">
+            {{ helloNameResult().status }}
+          </span>
+          }
+          @if (helloNameResult().duration !== null) {
+          <span class="duration">{{ helloNameResult().duration }}ms</span>
+          }
+        </div>
+        @if (helloNameResult().data) {
+        <pre class="result-json">{{ formatJson(helloNameResult().data) }}</pre>
+        }
+        @if (helloNameResult().error) {
+        <div class="result-error">{{ helloNameResult().error }}</div>
+        }
+      </div>
+      }
+    </div>
+
+    <!-- GET /me -->
+    <div class="api-card glass-card full-width">
+      <div class="api-card-header">
+        <div class="api-info">
+          <span class="method-badge get">GET</span>
+          <span class="api-path">/me</span>
+        </div>
+        <span class="role-badge accent">User.Read</span>
+      </div>
+      <p class="api-desc">Full identity and claims of the authenticated user</p>
+      <button class="btn btn-accent" (click)="callMe()" [disabled]="meResult().loading" id="call-me-btn">
+        @if (meResult().loading) {
+        <span class="spinner"></span> Loading…
+        } @else {
+        <span class="btn-icon">🪪</span> Get Identity
+        }
+      </button>
+      @if (meResult().data || meResult().error) {
+      <div class="result-panel" [class.error]="!!meResult().error" [class.success]="!!meResult().data">
+        <div class="result-meta">
+          @if (meResult().status) {
+          <span class="status-code" [class.ok]="meResult().status === 200" [class.fail]="meResult().status !== 200">
+            {{ meResult().status }}
+          </span>
+          }
+          @if (meResult().duration !== null) {
+          <span class="duration">{{ meResult().duration }}ms</span>
+          }
+        </div>
+        @if (meResult().data) {
+        <pre class="result-json">{{ formatJson(meResult().data) }}</pre>
+        }
+        @if (meResult().error) {
+        <div class="result-error">{{ meResult().error }}</div>
+        }
+      </div>
+      }
+    </div>
+
+  </div>
+</div>

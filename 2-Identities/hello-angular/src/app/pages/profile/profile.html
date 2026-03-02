@@ -1,0 +1,54 @@
+<div class="profile-page">
+  <div class="profile-header">
+    <h1>User <span class="gradient-text">Profile</span></h1>
+    <p class="subtitle">Your Entra ID identity and token claims</p>
+  </div>
+
+  @if (account()) {
+  <div class="profile-grid">
+
+    <!-- Identity Card -->
+    <div class="glass-card identity-card">
+      <div class="avatar">
+        <span class="avatar-text">{{ (account()!.name ? account()!.name : (account()!.username ? account()!.username :
+          '?'))!.charAt(0).toUpperCase() }}</span>
+      </div>
+      <h2 class="identity-name">{{ account()!.name ?? '—' }}</h2>
+      <p class="identity-email">{{ account()!.username }}</p>
+      <div class="identity-meta">
+        <div class="meta-row">
+          <span class="meta-label">Tenant</span>
+          <span class="meta-value mono">{{ account()!.tenantId }}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Home Account</span>
+          <span class="meta-value mono">{{ account()!.homeAccountId }}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Environment</span>
+          <span class="meta-value mono">{{ account()!.environment }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Claims Card -->
+    <div class="glass-card claims-card">
+      <h3 class="card-title">🎫 ID Token Claims</h3>
+      <div class="claims-table">
+        @for (entry of claimEntries; track entry[0]) {
+        <div class="claim-row">
+          <span class="claim-key">{{ entry[0] }}</span>
+          <span class="claim-value">{{ formatValue(entry[1]) }}</span>
+        </div>
+        }
+      </div>
+    </div>
+
+  </div>
+  } @else {
+  <div class="no-auth glass-card">
+    <span class="no-auth-icon">🔒</span>
+    <p>You are not signed in. Please sign in to view your profile.</p>
+  </div>
+  }
+</div>

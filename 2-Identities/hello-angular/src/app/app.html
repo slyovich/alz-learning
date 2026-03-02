@@ -1,0 +1,49 @@
+<nav class="navbar">
+  <a routerLink="/" class="nav-brand" id="nav-brand">
+    <span class="brand-icon">🔐</span>
+    <span class="brand-text">HelloAPI</span>
+  </a>
+
+  <div class="nav-links">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link"
+      id="nav-home">
+      Home
+    </a>
+    @if (isAuthenticated()) {
+    <a routerLink="/dashboard" routerLinkActive="active" class="nav-link" id="nav-dashboard">
+      Dashboard
+    </a>
+    <a routerLink="/profile" routerLinkActive="active" class="nav-link" id="nav-profile">
+      Profile
+    </a>
+    }
+  </div>
+
+  <div class="nav-actions">
+    @if (isAuthenticated()) {
+    <span class="nav-user">
+      <span class="user-avatar">{{ (userName() ?? '?').charAt(0).toUpperCase() }}</span>
+      <span class="user-name">{{ userName() }}</span>
+    </span>
+    <button class="btn btn-outline btn-sm" (click)="logout()" id="logout-btn">
+      Sign out
+    </button>
+    } @else {
+    <button class="btn btn-primary btn-sm" (click)="login()" id="nav-login-btn">
+      Sign in
+    </button>
+    }
+  </div>
+</nav>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-text">Hello API Explorer · Angular + MSAL + FastAPI</span>
+    <span class="footer-dot">·</span>
+    <span class="footer-text">Entra ID Authentication Demo</span>
+  </div>
+</footer>

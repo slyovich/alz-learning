@@ -2,6 +2,7 @@
 and App Role–based authorisation."""
 
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from auth import TokenClaims, require_role
 
@@ -17,6 +18,15 @@ app = FastAPI(
         "secured endpoints."
     ),
     version="3.0.0",
+)
+
+# CORS — allow the Angular SPA to call the API during development
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
