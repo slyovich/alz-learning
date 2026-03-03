@@ -1,84 +1,118 @@
-# 🚀 Azure Learning Playground
+# 🎓 ALZ Learning — Azure Landing Zone Education
 
-Welcome to your hands-on Azure adventure! This repo is your launchpad for learning Azure using Infrastructure as Code (IaC) with Bicep, Terraform and Azure CLI. Get ready to deploy, break, and rebuild the cloud—one module at a time! ☁️🛠️
+This repository is an **educational resource** for hands-on learning of Azure Landing Zone concepts, application security, and identity management in Azure.
 
----
-
-## 📚 Table of Contents
-
-1. [Introduction](#introduction)
-2. [Repository Structure](#repository-structure)
-3. [Getting Started](#getting-started)
-4. [Modules Overview](#modules-overview)
-5. [How to Deploy](#how-to-deploy)
-6. [Learning Resources](#learning-resources)
-7. [Contributing](#contributing)
+It accompanies a series of presentations ([MARP](https://marp.app/) format) and hands-on labs designed to build skills on Azure fundamentals.
 
 ---
 
-## 1. 🎉 Introduction
+## 🎯 Purpose
 
-This repository is designed for developers who want to learn Azure by doing! It provides modular Bicep/Terraform/Azure CLI templates to help you bootstrap and manage core Azure resources in a repeatable, automated way. Perfect for experimentation, demos, and cloud mischief. 😈
+Provide a progressive, structured learning environment covering:
 
-## 2. 🗂️ Repository Structure
+- **Bootstrapping** an Azure Landing Zone with Infrastructure as Code (Bicep)
+- **Securing applications** on Azure App Service (from public exposure to Zero Trust)
+- **Identity and access management** with Microsoft Entra ID (RBAC, Managed Identities, App Registrations)
+
+Each module contains runnable code, deployment scripts, and presentations to facilitate understanding.
+
+---
+
+## 📁 Repository Structure
 
 ```
-0-bootstrap/
-  main.bicep                # Main entry point for bootstrapping
-  modules/
-	 dns-zones.bicep         # DNS zones module
-	 lz-vending.bicep        # Landing zone vending module
-	 resourcegroups.bicep    # Resource groups module
-	 storage.bicep           # Storage accounts module
-	 vpngateway.bicep        # VPN gateway module
+alz-learning/
+├── 0-bootstrap/          # Landing Zone bootstrapping
+├── 1-AppService/         # Progressive App Service security
+├── 2-Identities/         # Identities, access & secure communications
+└── README.md
 ```
 
-## 3. 🏁 Getting Started
+---
 
-1. **Clone this repo:**
-	```sh
-	git clone <your-fork-url>
-	cd alz-learning
-	```
-2. **Install [Bicep CLI](https://learn.microsoft.com/azure/azure-resource-manager/bicep/install):**
-	```sh
-	az bicep install
-	```
-3. **Login to Azure:**
-	```sh
-	az login
-	```
+### 📦 `0-bootstrap/` — Landing Zone Bootstrapping
 
-## 4. 🧩 Modules Overview
+Infrastructure initialization using **Azure Bicep** and [Azure Verified Modules (AVM)](https://azure.github.io/Azure-Verified-Modules/).
 
-- **dns-zones.bicep**: Manage DNS zones like a boss! 🌐
-- **lz-vending.bicep**: Spin up landing zones faster than you can say "cloud"! 🏭
-- **resourcegroups.bicep**: Organize your resources (or your life) into groups. 📦
-- **storage.bicep**: Store all the things, especially the Terraform state of the next phases! 🗄️
-- **vpngateway.bicep**: Secure your cloud traffic with VPNs. 🕵️‍♂️
+| Module | Description |
+|--------|-------------|
+| `main.bicep` | Main deployment orchestrator |
+| `modules/lz-vending.bicep` | Network configuration (VNet, subnets, NSG) and managed identity |
+| `modules/dns-zones.bicep` | Private DNS zones for Private Links |
+| `modules/resourcegroups.bicep` | Resource Group creation |
+| `modules/storage.bicep` | Secure Storage Account for Terraform state |
+| `modules/virtualmachine.bicep` | Ubuntu jumpbox VM + Azure Bastion |
 
-## 5. 🚦 How to Deploy
+---
 
-Deploy the main bootstrapper:
+### 🌐 `1-AppService/` — Securing Azure App Service
+
+A progressive security journey for a Web App in **5 steps**, illustrated with a MARP presentation and Azure CLI scripts.
+
+| Step | Topic | Script |
+|------|-------|--------|
+| 1 | Public App Service | `infra/0-default.sh` |
+| 2 | IP Restrictions | `infra/1a-iprestrictions.sh`, `infra/1b-iprestrictions.sh` |
+| 3 | Private Endpoint | `infra/2-privateendpoint.sh` |
+| 3.5 | VNet Integration | `infra/3-vnetintegration.sh` |
+| 4 | Application Gateway + WAF | — |
+| 5 | Zero Trust + Entra ID (EasyAuth) | `infra/4-easyauth.sh` |
+
+**Additional content:**
+
+- `AzureAppService.md` — Full MARP presentation (from public to Zero Trust)
+- `api/` — Demo Node.js API
+
+---
+
+### 🔐 `2-Identities/` — Identity & Access Management
+
+Module dedicated to understanding **Azure identities** and **securing service-to-service communications** with Microsoft Entra ID.
+
+| Content | Description |
+|---------|-------------|
+| `Identities and Access Management.md` | MARP presentation covering identity types, RBAC, App Registrations, and Workload Identity Federation |
+| `hello-api/` | Python API (FastAPI) secured with Entra ID — token validation, scopes, and app roles |
+| `hello-client/` | Python console app demonstrating service-to-service authentication (Client Credentials Flow) |
+| `hello-angular/` | Angular application with MSAL authentication (Authorization Code Flow) |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) installed
+- [Bicep CLI](https://learn.microsoft.com/azure/azure-resource-manager/bicep/install) installed (`az bicep install`)
+- An Azure subscription with appropriate permissions
+- Python 3.x (for the Identities module projects)
+- Node.js (for the App Service module API and the Angular app)
+
+### Quick Start
 
 ```sh
-az deployment sub create \
-  --location <azure-region> \
-  --template-file 0-bootstrap/main.bicep
+# Clone the repository
+git clone <your-fork-url>
+cd alz-learning
+
+# Log in to Azure
+az login
 ```
 
-You can also deploy individual modules for focused learning.
-
-## 6. 📖 Learning Resources
-
-- [Bicep Documentation](https://learn.microsoft.com/azure/azure-resource-manager/bicep/)
-- [Azure Fundamentals](https://learn.microsoft.com/training/paths/azure-fundamentals/)
-- [Microsoft Learn](https://learn.microsoft.com/training/)
-
-## 7. 🤝 Contributing
-
-Found a bug, want to add a module, or just want to say hi? Open an issue or PR! Contributions (and memes) are welcome.
+Each module can be explored independently — refer to the `README.md` in each subfolder for specific instructions.
 
 ---
 
-Happy learning! 🧑‍🚀🌟
+## 📖 Additional Resources
+
+- [Azure Bicep Documentation](https://learn.microsoft.com/azure/azure-resource-manager/bicep/)
+- [Azure Landing Zones](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/)
+- [Microsoft Entra ID Documentation](https://learn.microsoft.com/entra/identity/)
+- [Azure App Service Security Best Practices](https://learn.microsoft.com/azure/app-service/overview-security)
+- [MSAL.js Documentation](https://learn.microsoft.com/entra/msal/js/)
+
+---
+
+## 📝 License
+
+This repository is for educational use.
