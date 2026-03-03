@@ -25,6 +25,10 @@ alz-learning/
 ├── 0-bootstrap/          # Landing Zone bootstrapping
 ├── 1-AppService/         # Progressive App Service security
 ├── 2-Identities/         # Identities, access & secure communications
+│   ├── .scripts/         # Automation scripts (setup, assign roles, cleanup)
+│   ├── hello-api/        # Secured Python API (FastAPI + Entra ID)
+│   ├── hello-client/     # Service-to-service console client
+│   └── hello-angular/    # Angular SPA with MSAL authentication
 └── README.md
 ```
 
@@ -57,6 +61,7 @@ A progressive security journey for a Web App in **5 steps**, illustrated with a 
 | 3.5 | VNet Integration | `infra/3-vnetintegration.sh` |
 | 4 | Application Gateway + WAF | — |
 | 5 | Zero Trust + Entra ID (EasyAuth) | `infra/4-easyauth.sh` |
+| 🧹 | Cleanup (delete all resources) | `infra/5-delete.sh` |
 
 **Additional content:**
 
@@ -69,12 +74,28 @@ A progressive security journey for a Web App in **5 steps**, illustrated with a 
 
 Module dedicated to understanding **Azure identities** and **securing service-to-service communications** with Microsoft Entra ID.
 
+#### 📖 Presentations & Labs
+
 | Content | Description |
 |---------|-------------|
 | `Identities and Access Management.md` | MARP presentation covering identity types, RBAC, App Registrations, and Workload Identity Federation |
-| `hello-api/` | Python API (FastAPI) secured with Entra ID — token validation, scopes, and app roles |
-| `hello-client/` | Python console app demonstrating service-to-service authentication (Client Credentials Flow) |
-| `hello-angular/` | Angular application with MSAL authentication (Authorization Code Flow) |
+| `Lab - Identities.md` | MARP hands-on lab — step-by-step guide to creating and configuring App Registrations, scopes, App Roles, and pre-authorized applications |
+
+#### 🚀 Sample Applications
+
+| Project | Stack | Description |
+|---------|-------|-------------|
+| `hello-api/` | Python / FastAPI | Web API secured with Entra ID — JWT validation, delegated scopes, and App Role-based authorisation |
+| `hello-client/` | Python / MSAL | Console app demonstrating **Client Credentials Flow** (service-to-service) |
+| `hello-angular/` | Angular 21 / MSAL | SPA with **Authorization Code Flow**, runtime config, MSAL Guard & Interceptor |
+
+#### 🔧 Automation Scripts (`.scripts/`)
+
+| Script | Description |
+|--------|-------------|
+| `setup-app-registrations.sh` | One-command setup: creates all three App Registrations, configures scopes, App Roles, Service Principals, permissions, admin consent, and generates `.env` / `config.json` files |
+| `assign-user-roles.sh` | Assigns `Hello.Read` and `User.Read` App Roles to a specified user via Microsoft Graph |
+| `cleanup-app-registrations.sh` | Tears down all App Registrations and generated config files |
 
 ---
 
@@ -84,9 +105,10 @@ Module dedicated to understanding **Azure identities** and **securing service-to
 
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) installed
 - [Bicep CLI](https://learn.microsoft.com/azure/azure-resource-manager/bicep/install) installed (`az bicep install`)
+- [jq](https://jqlang.github.io/jq/) installed (`brew install jq`) — required by the identity automation scripts
 - An Azure subscription with appropriate permissions
-- Python 3.x (for the Identities module projects)
-- Node.js (for the App Service module API and the Angular app)
+- Python 3.10+ (for the Identities module projects)
+- Node.js ≥ 20 (for the App Service module API and the Angular SPA)
 
 ### Quick Start
 
