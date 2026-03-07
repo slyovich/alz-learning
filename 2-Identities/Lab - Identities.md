@@ -395,7 +395,7 @@ Both can coexist on the same App Registration.
 ## Ajouter les permissions applicatives
 
 1. Dans l'App Registration **Hello API Client** → **API permissions**
-2. **Add a permission** → **My APIs** → sélectionner **Hello World API**
+2. **Add a permission** → **APIs my organisation uses** → sélectionner **Hello World API**
 3. Choisir **Application permissions** (et non Delegated)
 4. Cocher `Hello.Read` et `User.Read`
 5. Cliquer **Add permissions**
@@ -740,7 +740,7 @@ L'API autorise les requêtes via les **App Roles** (claim `roles`), pas les scop
 ## Configurer le scope
 
 1. **Azure Portal → Entra ID → App registrations → Hello World API**
-2. **Expose an API** → Cliquer **Set** à côté de *Application ID URI*
+2. **Expose an API** → Cliquer **Add** à côté de *Application ID URI*
    - Accepter le format par défaut : `api://<client-id>`
 3. **Add a scope** :
    - **Scope name** : `access_as_user`
