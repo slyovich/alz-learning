@@ -1127,6 +1127,45 @@ npm start
 ---
 
 <style scoped>
+  p, ul {
+    font-size: 20px;
+    margin-top: 0px;
+  }
+  h2 {
+    font-size: 26px;
+    margin-top: 10px;
+  }
+  table {
+    font-size: 18px;
+    margin-top: 5px;
+  }
+  blockquote {
+    font-size: 16px;
+    margin-top: 20px;
+  }
+</style>
+
+# 💡 Une seule App Registration pour tout ?
+
+## Pourrait-on utiliser une seule App Reg pour la SPA et l'API ?
+
+**Techniquement oui**, mais c'est **déconseillé**. Le SPA demanderait un token dont l'audience serait son propre `clientId`, et l'API validerait ce même ID. Ça fonctionne, mais…
+
+## Pourquoi séparer ?
+
+| Problème avec une seule App Reg | Impact |
+|---|---|
+| 🔐 **Mélange des responsabilités** | Un client public (SPA, sans secret) et une ressource protégée (API) partagent la même identité |
+| 🎯 **Perte de sémantique de l'audience** | Le claim `aud` devrait identifier la *ressource cible*, pas le client lui-même |
+| 🔀 **Pollution de la configuration** | Les redirect URIs (SPA), les scopes exposés (API) et les App Roles se retrouvent tous sur le même objet — la maintenance devient confuse |
+| 📋 **Pas de pré-autorisation** | Le mécanisme *pre-authorized client* n'a de sens qu'entre entités distinctes. Dès lors, le consentement utilisateur serait requis pour chaque client. |
+| 🔒 **Pas de contrôle granulaire** | On ne peut pas différencier les permissions par application cliente (via l'utilisation des scopes) |
+
+> ✅ **Bonne pratique Microsoft :** **1 App Registration = 1 identité = 1 responsabilité**. Le SPA est un *client* qui demande des tokens pour une *ressource* (l'API) — deux entités, deux App Registrations.
+
+---
+
+<style scoped>
   ul {
     font-size: 22px;
     margin-top: 10px;
