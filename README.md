@@ -83,6 +83,9 @@ Module dedicated to understanding **Azure identities** and **securing service-to
 
 #### 🚀 Sample Applications
 
+> [!NOTE]
+> The `hello-*` applications were **generated using AI** and are intended solely for use within the lab focused on **Azure App Registrations** (Microsoft Entra ID). They are not designed for production use.
+
 | Project | Stack | Description |
 |---------|-------|-------------|
 | `hello-api/` | Python / FastAPI | Web API secured with Entra ID — JWT validation, delegated scopes, and App Role-based authorisation |

@@ -135,7 +135,7 @@ style: |
 
 <style scoped>
   ul {
-    font-size: 24px;
+    font-size: 22px;
     margin-top: 0px;
   }
   h2 {
@@ -163,6 +163,8 @@ style: |
   - `2-Identities/hello-angular`
 
 > 💡 Notez votre **Tenant ID** — vous en aurez besoin à chaque étape. Vous le trouverez dans **Azure Portal → Microsoft Entra ID → Overview**.
+
+> Les applications hello-* ont été **générées à l'aide de l'IA** et ne sont destinées qu'à être utilisées dans le cadre de ce lab. Elles ne sont pas conçues pour un usage en production.
 
 ---
 
