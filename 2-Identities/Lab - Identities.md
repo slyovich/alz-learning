@@ -319,7 +319,7 @@ Les App Roles contrôlent **qui** (utilisateur, groupe ou application) est autor
 
 # 💡 Scopes vs Roles
 
-Both appear as claims in the token, but they follow different models:
+Les deux apparaissent comme des claims dans le token, mais suivent des modèles différents :
 
 |                         | **Scopes** (`scp`)                          | **Roles** (`roles`)                                  |
 |-------------------------|---------------------------------------------|------------------------------------------------------|
@@ -330,12 +330,12 @@ Both appear as claims in the token, but they follow different models:
 | **Token claim**         | `scp` (space-separated string)              | `roles` (array of strings)                           |
 | **Use case**            | "This app can read my greetings"            | "This user/app is an Admin"                          |
 
-In short:
+En résumé :
 
-- **scopes** = the *user* controls what an app can do on their behalf;
-- **roles** = an *admin* controls who has which role.
+- **scopes** = l'*utilisateur* contrôle ce qu'une application peut faire en son nom ;
+- **roles** = un *administrateur* contrôle qui a quel rôle.
 
-Both can coexist on the same App Registration.
+Les deux peuvent coexister dans la même App Registration.
 
 ---
 
