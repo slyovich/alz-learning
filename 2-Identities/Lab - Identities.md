@@ -356,7 +356,7 @@ Les deux peuvent coexister dans la même App Registration.
 
 # 📝 Étape 1.4 — Créer un Service Principal
 
-## Créer une App Registration pour le tester l'API
+## Créer une App Registration pour tester l'API
 
 1. **Azure Portal** → **Microsoft Entra ID** → **App registrations** → **New registration**
 2. Remplir :
