@@ -4,6 +4,12 @@ theme: gaia
 paginate: true
 size: 16:9
 style: |
+  :root {
+    --color-background: rgb(55, 114, 153);
+    --color-foreground: #333;
+    --color-highlight: #f96;
+    --color-dimmed: #888;
+  }
   section {
     background-color: #0f172a;
     color: #f1f5f9;
