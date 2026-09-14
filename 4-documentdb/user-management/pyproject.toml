@@ -1,0 +1,14 @@
+[project]
+name = "user-management"
+version = "0.1.0"
+description = "Sample Azure Cosmos DB for MongoDB user management script"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "azure-identity==1.25.0",
+  "pymongo==4.14.1",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
